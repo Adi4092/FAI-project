@@ -1,0 +1,10 @@
+medicineCode,date,unitsDispensed,stockoutObserved
+MED-001,2026-04-01,15,false
+MED-001,2026-04-02,12,false
+MED-001,2026-04-03,18,false
+MED-002,2026-04-01,22,false
+MED-002,2026-04-02,0,true
+MED-002,2026-04-03,25,false
+MED-003,2026-04-01,8,false
+MED-003,2026-04-02,10,false
+MED-003,2026-04-03,9,false

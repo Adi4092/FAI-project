@@ -1,0 +1,6 @@
+medicineCode,supplierName,batchNumber,manufacturingDate,expiryDate,quantity,purchaseCostPerUnit,receivedAt
+MED-001,HealthPlus Pharma,B001,2025-06-01,2027-05-31,500,0.85,2025-06-15
+MED-002,Pharma Co,B002,2025-08-01,2026-05-18,120,2.50,2025-08-15
+MED-003,HealthPlus Pharma,B005,2025-09-01,2026-05-30,50,4.20,2025-09-20
+MED-004,MediSupply,B004,2025-07-01,2027-06-30,300,1.10,2025-07-10
+MED-005,CareLife,B003,2025-05-01,2027-04-30,250,1.40,2025-05-15

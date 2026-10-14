@@ -1,0 +1,6 @@
+medicineCode,name,category,unit,description,reorderLevel,safetyStock,isActive
+MED-001,Paracetamol 500mg,Analgesic,tablet,Standard antipyretic and analgesic,100,50,true
+MED-002,Amoxicillin 250mg,Antibiotic,capsule,Broad-spectrum beta-lactam antibiotic,120,40,true
+MED-003,Ciprofloxacin 500mg,Antibiotic,tablet,Fluoroquinolone antibiotic,80,30,true
+MED-004,Metformin 500mg,Antidiabetic,tablet,First-line medication for type 2 diabetes,150,50,true
+MED-005,Ibuprofen 400mg,NSAID,tablet,Nonsteroidal anti-inflammatory drug,90,30,true
