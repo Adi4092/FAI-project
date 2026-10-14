@@ -25,6 +25,12 @@ export default function LoginPage() {
 
   const from = location.state?.from?.pathname || '/dashboard';
 
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
+
   const {
     register,
     handleSubmit,
