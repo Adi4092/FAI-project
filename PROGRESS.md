@@ -1,6 +1,6 @@
 # MedStock AI — Session Handoff & Progress Report
 
-**Current Local Time:** 2026-10-14T01:54:13+05:30  
+**Current Local Time:** 2026-10-14T10:32:00+05:30  
 **Repository Path:** `c:\Users\sbhoe\OneDrive\Desktop\FAI project`  
 
 ---
@@ -9,7 +9,12 @@
 
 - **Phase 1 (Requirements and Architecture):** ✅ **Completed**
 - **Phase 2 (Frontend Foundation):** ✅ **Completed**
-- **Phase 3 (Inventory Backend):** ⏳ **Not Started**
+- **Phase 3 (Inventory Backend):** ✅ **Completed**
+- **Phase 4 (Inventory Frontend Integration):** ⏳ **Next Up**
+- **Phase 5 (AI Service):** ⏳ **Not Started**
+- **Phase 6 (Inventory Intelligence):** ⏳ **Not Started**
+- **Phase 7 (Remaining Screens):** ⏳ **Not Started**
+- **Phase 8 (Integration and QA):** ⏳ **Not Started**
 
 ---
 
@@ -28,154 +33,120 @@
   - `templates/medicines.csv`, `templates/batches.csv`, `templates/daily_usage.csv`
   - `synthetic/.gitkeep`
 - **`server/`:**
-  - `.env.example`
-  - Directory placeholders (`src/.gitkeep`, `tests/.gitkeep`)
-- **`ai-service/`:**
-  - `.env.example`
-  - Directory placeholders (`app/.gitkeep`, `trained_models/.gitkeep`, `tests/.gitkeep`)
+  - `package.json`, `vitest.config.js`, `.env.example`
+  - **`src/config/`:** `env.js`, `db.js`, `logger.js`
+  - **`src/utils/`:** `apiResponse.js`, `ApiError.js`, `pagination.js`, `dates.js`
+  - **`src/middleware/`:** `auth.js`, `authorize.js`, `csrf.js`, `rateLimit.js`, `validate.js`, `errorHandler.js`, `notFound.js`
+  - **`src/models/`:** `User.js`, `RefreshToken.js`, `Medicine.js`, `Supplier.js`, `MedicineSupplier.js`, `Batch.js`, `StockMovement.js` (immutable ledger), `DailyUsage.js`, `Setting.js`, `AuditLog.js` (append-only), `index.js`
+  - **`src/services/`:** `authService.js`, `fefoService.js`, `stockService.js`, `auditService.js`
+  - **`src/validators/`:** `authValidator.js`, `medicineValidator.js`, `batchValidator.js`, `inventoryValidator.js`, `supplierValidator.js`
+  - **`src/controllers/`:** `authController.js`, `medicineController.js`, `batchController.js`, `inventoryController.js`, `stockMovementController.js`, `supplierController.js`, `userController.js`, `settingController.js`, `auditLogController.js`
+  - **`src/routes/`:** `authRoutes.js`, `medicineRoutes.js`, `batchRoutes.js`, `inventoryRoutes.js`, `stockMovementRoutes.js`, `supplierRoutes.js`, `userRoutes.js`, `settingRoutes.js`, `auditLogRoutes.js`
+  - **`src/seed/`:** `seed.js` (idempotent, supports `--reset-demo`)
+  - **`src/app.js` & `src/server.js`**
+  - **`tests/`:** `setup.js` (MongoMemoryReplSet test harness), `auth.test.js`, `stockLogic.test.js`, `seed.test.js`
 - **`client/`:**
   - `package.json`, `vite.config.js`, `tailwind.config.js`, `postcss.config.js`, `index.html`, `.env.example`, `.env`
-  - `src/` (details below)
-
-### 2.2 Client Components & Shared Layout
-- **Design System Tokens (`client/tailwind.config.js` & `client/src/index.css`):**
-  - Navy gradient (`#0B2A5B` to `#061B3F`), brand blue (`#1F6FEB`), background (`#F3F7FC`), status pills, Inter typography.
-- **Reusable Components (`client/src/components/common/`):**
-  - `Button.jsx`, `Input.jsx`, `Select.jsx`, `Badge.jsx` (StatusBadge), `KpiCard.jsx`, `ChartCard.jsx`, `AlertPanel.jsx`, `ProgressBar.jsx`, `Tabs.jsx`, `Modal.jsx`, `ConfirmDialog.jsx`, `Toast.jsx`, `Skeleton.jsx`, `EmptyState.jsx`, `ErrorState.jsx`, `Pagination.jsx`, `DataTable.jsx`, `DateRangeFilter.jsx`.
-- **Layout (`client/src/components/layout/`):**
-  - `AppLayout.jsx` (main wrapper)
-  - `Sidebar.jsx` (230px navy gradient, medical logo, active route highlighting, AI status indicator)
-  - `Topbar.jsx` (global search, notifications icon, user profile dropdown)
-  - `MobileDrawer.jsx` (collapsible drawer for `< lg` screens)
-  - `PageHeader.jsx` (title, subtitle, action buttons)
-- **State, Hooks & Utilities:**
-  - `AuthContext.jsx`, `ToastContext.jsx`
-  - `useAuth.js`, `useToast.js`, `useDebounce.js`, `usePagination.js`
-  - `api.js` (Axios instance configured with `withCredentials: true` and CSRF header handling)
-  - `authService.js`
-  - `formatDate.js`, `formatNumber.js`, `constants.js`
-
-### 2.3 Routes & Screens (Real vs. Placeholders)
-Defined in `client/src/routes/AppRoutes.jsx` protected by `ProtectedRoute.jsx` and `RoleRoute.jsx`:
-
-| Screen # | Route | Component | Status | Description |
-|---|---|---|:---:|---|
-| **01** | `/login` | `LoginPage.jsx` | **Real** | Split-layout with React Hook Form, Zod schema validation, password visibility toggle, and 1-click demo credential fill buttons. |
-| **02** | `/dashboard` | `DashboardPage.jsx` | **Real (with mock data)** | Full dashboard with visible **"Demonstration data"** banner, 4 KPI cards, Inventory Health progress bars, Recharts area chart, recent movements table, and critical alerts panel. |
-| **03** | `/medicines` | `MedicinesPage.jsx` | *Functional Placeholder* | Styled table with search, category/status filters, and action buttons. |
-| **04** | `/inventory` | `InventoryPage.jsx` | *Functional Placeholder* | Batch tracking with Usable vs. Expired tabs and filters. |
-| **05** | `/expiry-risk` | `ExpiryRiskPage.jsx` | *Functional Placeholder* | 7/30/60/90 day tabs, risk level pills, wastage & cost cards. |
-| **06** | `/forecasting` | `ForecastingPage.jsx` | *Functional Placeholder* | Line chart (actual vs. predicted), MAE/RMSE/WAPE cards, horizon selector. |
-| **07** | `/stockout-predictions` | `StockoutPage.jsx` | *Functional Placeholder* | Depletion estimates, priority pills, and reorder trigger action. |
-| **08** | `/reorders` | `ReordersPage.jsx` | *Functional Placeholder* | Reorder table, suggested order units, estimated cost cards. |
-| **09** | `/stock-movements` | `StockMovementsPage.jsx` | *Functional Placeholder* | Movement ledger view with type pills (+/- quantities) and date range. |
-| **10** | `/suppliers` | `SuppliersPage.jsx` | *Functional Placeholder* | Supplier directory with lead times and status pills. |
-| **11** | `/purchase-orders` | `PurchaseOrdersPage.jsx` | *Functional Placeholder* | PO lifecycle table with status pills and actions. |
-| **12** | `/reports` | `ReportsPage.jsx` | *Functional Placeholder* | Report type tabs, realized write-off vs. projected exposure cards. |
-| **13** | `/notifications` | `NotificationsPage.jsx` | *Functional Placeholder* | Alert list with severity pills, unread indicators, mark-read action. |
-| **14** | `/users` | `UsersPage.jsx` | *Functional Placeholder* | Role management table (admin-only route guard). |
-| **15** | `/settings` | `SettingsPage.jsx` | *Functional Placeholder* | Tabs for General, Alerts, Forecasting, and CSV file dropzone preview tool. |
-| — | `/forbidden` | `ForbiddenPage.jsx` | **Real** | 403 access restricted error view. |
-| — | `*` | `NotFoundPage.jsx` | **Real** | 404 page with return to dashboard action. |
+  - 15 functional screens and shared navigation layout.
+- **`ai-service/`:**
+  - `.env.example`
+  - Placeholders for Phase 5.
 
 ---
 
-## 3. How to Run the Client
+## 3. Phase 3 Implemented Capabilities & Verification
 
-### Exact Commands
+### 3.1 Security & Authentication
+- **Access JWT (15m)** and **Refresh Token (7d)** set via HTTP-only, SameSite=Lax cookies.
+- Refresh token rotation in database with reuse detection and revocation.
+- **Double-submit CSRF protection:** `csrf_token` cookie compared against `X-CSRF-Token` header on all state mutations (`POST`, `PUT`, `PATCH`, `DELETE`).
+- **Role-Based Access Control (RBAC):** Backend route enforcement across `admin`, `inventory_manager`, and `staff` roles.
+- **Rate Limiting:** Global rate limiter plus strict 15-minute limiter on login attempts.
+
+### 3.2 Core Inventory & Stock Logic
+- **Mongoose Data Models:** Fully implemented with compound uniqueness, date validations, and TTL session indexing.
+- **Immutable Ledger:** `StockMovement` model enforces immutability via pre-hooks that reject updates, replacements, and deletes.
+- **FEFO Allocation Algorithm (`fefoService.js`):** Strict allocation prioritizing earliest expiring usable batches (`expiryDate >= startOfToday`), excluding expired and quarantined stock.
+- **Atomic Operations & Transactions (`stockService.js`):**
+  - Stock receipt, dispense, return, adjustment, and write-off.
+  - Multi-document transaction wrapper (`withTransaction`) supporting replica sets with automatic fallback to conditional atomic updates.
+  - Negative stock prevention guarded by atomic `$inc` with `$gte` balance filters.
+  - Realized wastage cost calculation on expired write-offs.
+  - Reversible compensating movements (`POST /api/stock-movements/:id/correct`).
+- **Reconciliation Endpoint:** `GET /api/inventory/reconcile` actively verifies that each batch's current quantity matches its initial quantity plus the sum of all its ledger movements.
+
+### 3.3 Automated Test Results
+Run via `npm test` inside `server/` using Vitest and `MongoMemoryReplSet`:
+```
+Test Files  3 passed (3)
+     Tests  14 passed (14)
+  Duration  ~9.1s
+```
+- **Auth & Security (`tests/auth.test.js`):**
+  - `POST /api/auth/login` sets HTTP-only cookies and returns user profile.
+  - `POST /api/auth/login` rejects invalid password with 401.
+  - `GET /api/auth/me` retrieves session.
+  - CSRF double-submit token check rejects mutations when header is omitted (403).
+  - RBAC strictly blocks staff from admin-only routes (403).
+- **Stock Logic (`tests/stockLogic.test.js`):**
+  - Rejects duplicate medicine codes (409).
+  - Stock receipt creates batch and immutable receipt movement (+).
+  - Dispenses stock via FEFO (earliest expiry first).
+  - Blocks dispensing from expired batches (409 BATCH_EXPIRED).
+  - Prevents negative stock (409 INSUFFICIENT_STOCK).
+  - Inventory adjustment requires a reason and updates ledger.
+  - Write-off removes stock and calculates realized wastage cost.
+  - Reconcile endpoint verifies batch quantities against ledger movements.
+- **Seed Script (`tests/seed.test.js`):**
+  - Seeds admin, manager, staff users, 30 medicines, 5 suppliers, multi-batch lots, and 12 months of daily usage.
+  - Confirms zero reconciliation mismatches.
+
+---
+
+## 4. How to Run the Server
+
 ```bash
-# From workspace root
-cd client
+cd server
 
-# Install packages (if not already present)
+# Install dependencies (if not already done)
 npm install
 
-# Start Vite dev server on port 5173
-npm run dev -- --port 5173
+# Run automated tests (runs in-memory replica set, no external DB needed)
+npm test
 
-# Or compile production build to test bundle
-npm run build
+# Seed database (Atlas or local MongoDB configured in server/.env)
+npm run seed
+
+# Seed with reset of demo data
+npm run seed -- --reset-demo
+
+# Start Express server in development mode (port 5000)
+npm run dev
 ```
 
-### Environment Configuration
-- `client/.env` and `client/.env.example` both contain:
-  ```env
-  VITE_API_BASE_URL=http://localhost:5000/api
-  ```
-- No other environment variables are required to run the client.
-
-### Demo Login Credentials
-Click any of the quick-fill buttons on `/login` or enter:
-- **Admin:** `admin@medstock.local` / `password123`
-- **Manager:** `manager@medstock.local` / `password123`
-- **Staff:** `staff@medstock.local` / `password123`
-
----
-
-## 4. Decisions & Differences from Specification
-
-1. **UI Reference File Format:**
-   - The spec mentions `docs/ui-reference.png`. The actual repository file present in the directory is `docs/ui-reference.webp`. All UI styling, layout hierarchy, and color palettes were matched to `docs/ui-reference.webp`.
-2. **Library Versions:**
-   - Tailwind CSS pinned to v3 (`tailwindcss@^3.4.19` with `postcss` & `autoprefixer`) per spec Section 2.
-   - Vite 8 (`vite@^8.3.4`) and React 19 (`react@^19.2.8`).
-   - Clean ES modules JavaScript throughout (no TypeScript, per Section 0 Rule 4).
-3. **Demo Session Bridge (Phase 2):**
-   - Because the Express backend is not yet running in Phase 2, `authService.js` and `AuthContext.jsx` include a network fallback that saves a mock session to `localStorage` upon login. This allows the reviewer to authenticate, test role guards, and inspect all 15 screens without requiring a running backend.
+### Server Environment Configuration (`server/.env`)
+```env
+NODE_ENV=development
+PORT=5000
+MONGODB_URI=mongodb://127.0.0.1:27017/medstock
+JWT_ACCESS_SECRET=medstock-access-secret-key-development-minimum-32-chars
+JWT_REFRESH_SECRET=medstock-refresh-secret-key-development-minimum-32-chars
+ACCESS_TOKEN_TTL=15m
+REFRESH_TOKEN_TTL_DAYS=7
+CLIENT_ORIGIN=http://localhost:5173
+AI_SERVICE_URL=http://localhost:8000
+AI_SERVICE_TIMEOUT_MS=30000
+BCRYPT_COST=12
+```
 
 ---
 
-## 5. Mock Data to Replace Later
+## 5. Next Task: Phase 4 (Inventory Frontend Integration)
 
-1. **Dashboard (`DashboardPage.jsx`):**
-   - Prominently displays the required `"Demonstration data"` warning banner.
-   - `mockStockOverview`: Recharts series for total stock vs. used stock.
-   - `mockRecentMovements`: Recent ledger movement entries.
-   - `mockCriticalAlerts`: Unresolved alert cards.
-   - Top 4 KPI numbers (248 medicines, 12,840 units, 12 low stock, 8 expiry alerts) and health progress percentages (77% / 23%).
-2. **Placeholder Screens (Screens 3–15):**
-   - In-memory mock arrays in each page component (`mockMedicines`, `mockBatches`, `mockRiskBatches`, `mockForecastTimeline`, `mockStockouts`, `mockReorders`, `mockMovements`, `mockSuppliers`, `mockOrders`, `mockNotifications`, `mockUsers`, `mockPreviewRows`).
-3. **Replacement Phases:**
-   - Phase 4: Replace catalogue, batches, inventory operations, and suppliers with live Express API data.
-   - Phase 6: Replace demand forecast charts, expiry risk calculations, stockout tables, and reorders with live Express + FastAPI results.
-   - Phase 7: Replace purchase orders, notifications, reports, and settings with live Express data.
-
----
-
-## 6. Known Issues, Shortcuts & Environment Notes
-
-1. **Browser Driver Restriction:**
-   - The internal browser automation subagent was unable to download the Playwright browser driver due to an upstream download 404 on this Windows environment.
-   - All verification was performed through `npm run build` (compiled cleanly with 0 errors) and HTTP requests via PowerShell `Invoke-WebRequest` confirming that the dev server returns HTTP 200 and valid JS transforms for `main.jsx`, `LoginPage.jsx`, and `DashboardPage.jsx`.
-2. **Phase 2 Shortcuts:**
-   - Screens 3 through 15 are static/mock placeholders that match the UI reference visually but do not persist mutations or execute real API calls.
-   - Dispense dialog, receive modal, and reorder popovers will be fully implemented and wired to endpoints in Phase 4 and Phase 7.
-
----
-
-## 7. Next Task: Phase 3 (Inventory Backend)
-
-When starting the next session, build **Phase 3** in the `server/` directory:
-
-1. **Express Architecture & Setup:**
-   - Create Express app structure in `server/src/` (`app.js`, `server.js`, `config/env.js`, `config/db.js`, `config/logger.js`).
-   - MongoDB Atlas connection with replica set support (for multi-document transactions).
-   - Global error handler (`utils/apiResponse.js`, `utils/ApiError.js`), helmet, cors, cookie-parser, express-rate-limit.
-2. **Mongoose Models & Indexes (Section 6 & api-contract.md):**
-   - `User`, `RefreshToken`, `Medicine`, `Supplier`, `MedicineSupplier`, `Batch`, `StockMovement` (immutable ledger), `DailyUsage`, `Setting`, `AuditLog`.
-3. **Authentication & RBAC:**
-   - JWT access token (15m) + refresh token (7d) in HTTP-only cookies.
-   - Refresh token rotation in DB.
-   - CSRF double-submit token middleware (`csrf_token` cookie vs `X-CSRF-Token` header).
-   - Rate limiting on `/api/auth/login`.
-   - `authenticate` and `authorize(...roles)` middlewares.
-4. **Core Stock Services & Transactions (`services/stockService.js`, `services/fefoService.js`):**
-   - FEFO allocation algorithm (earliest expiry first, excluding expired batches).
-   - Atomic conditional updates (`$inc` guarded by `currentQuantity >= qty`).
-   - Transactional operations: receive stock, dispense, return, adjust, write-off.
-   - Ledger movements written for every stock change.
-   - Reconciliation endpoint (`GET /api/inventory/reconcile`).
-5. **Seed Script:**
-   - `npm run seed` creating admin, manager, staff accounts, 30 medicines, batches, movements, and DailyUsage records.
-6. **Backend Tests:**
-   - Supertest suite validating auth, FEFO allocation, negative stock rejection, expired dispense block, and ledger balance reconciliation.
+When starting Phase 4:
+1. Connect React `api.js` and `authService.js` to live Express `/api/auth/login`, `/me`, `/logout`.
+2. Connect `MedicinesPage.jsx` to live `/api/medicines` (search, filters, pagination, add/edit modal).
+3. Connect `InventoryPage.jsx` to live `/api/batches` and `/api/inventory` (usable vs. expired, receive modal, FEFO dispense modal, write-off dialog).
+4. Connect `StockMovementsPage.jsx` to live `/api/stock-movements` (ledger viewer, date range filters, CSV download).
+5. Connect `SuppliersPage.jsx` to live `/api/suppliers`.
+6. Remove demonstration data placeholders from connected screens and replace with real API state and toast feedback.
