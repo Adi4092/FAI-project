@@ -1,0 +1,31 @@
+code,name,category,pattern,base,reorderLevel,safetyStock,unitCost,isDemo
+MED-001,Paracetamol 500mg,Analgesic,high_stable,65.0,350,150,0.5,True
+MED-002,Amoxicillin 250mg,Antibiotic,seasonal_stockout,24.0,140,60,1.8,True
+MED-003,Ciprofloxacin 500mg,Antibiotic,seasonal,18.0,100,40,2.2,True
+MED-004,Metformin 500mg,Antidiabetic,high_stable,55.0,300,120,0.8,True
+MED-005,Ibuprofen 400mg,NSAID,stable,28.0,150,60,0.9,True
+MED-006,Azithromycin 500mg,Antibiotic,seasonal_stockout,20.0,120,50,3.5,True
+MED-007,Omeprazole 20mg,Gastrointestinal,increasing,22.0,130,50,1.2,True
+MED-008,Amlodipine 5mg,Cardiovascular,stable,32.0,160,70,0.7,True
+MED-009,Atorvastatin 10mg,Cardiovascular,increasing,25.0,140,60,1.4,True
+MED-010,Cetirizine 10mg,Antihistamine,seasonal,16.0,90,35,0.4,True
+MED-011,Salbutamol Inhaler 100mcg,Respiratory,seasonal,12.0,70,30,4.5,True
+MED-012,Losartan 50mg,Cardiovascular,stable,20.0,110,45,1.1,True
+MED-013,Pantoprazole 40mg,Gastrointestinal,high_stable,45.0,220,90,1.3,True
+MED-014,Metoprolol 25mg,Cardiovascular,stable,15.0,80,35,1.0,True
+MED-015,Clopidogrel 75mg,Cardiovascular,stable,14.0,75,30,2.1,True
+MED-016,Ceftriaxone 1g Injection,Antibiotic,seasonal_stockout,10.0,60,25,5.0,True
+MED-017,Insulin Glargine 100IU/ml,Antidiabetic,low_stable,4.0,25,10,18.0,True
+MED-018,Doxycycline 100mg,Antibiotic,seasonal,12.0,70,30,1.6,True
+MED-019,Levothyroxine 50mcg,Endocrine,stable,18.0,95,40,0.6,True
+MED-020,Montelukast 10mg,Respiratory,increasing_stockout,14.0,80,30,2.0,True
+MED-021,Diclofenac 50mg,NSAID,stable,22.0,120,50,0.65,True
+MED-022,Ranitidine 150mg,Gastrointestinal,low_stable,5.0,30,12,0.45,True
+MED-023,Furosemide 40mg,Cardiovascular,stable,12.0,65,25,0.55,True
+MED-024,Tramadol 50mg,Analgesic,intermittent,3.0,35,15,1.75,True
+MED-025,Alprazolam 0.5mg,Psychiatric,intermittent,2.5,25,10,0.85,True
+MED-026,Gabapentin 300mg,Neurology,increasing,11.0,60,25,2.4,True
+MED-027,Fluconazole 150mg,Antifungal,intermittent,2.0,20,10,3.1,True
+MED-028,Mupirocin 2% Ointment,Dermatology,low_stable,3.5,20,8,4.2,True
+MED-029,Ondansetron 4mg,Gastrointestinal,seasonal,15.0,80,30,1.9,True
+MED-030,Hydrochlorothiazide 25mg,Cardiovascular,stable,16.0,85,35,0.5,True

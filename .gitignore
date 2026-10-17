@@ -3,12 +3,17 @@ node_modules/
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Environment files
 .env
 .env.*
 .env.local
 .env.*.local
+!.env.example
+!server/.env.example
+!client/.env.example
+!ai-service/.env.example
 
 # Build outputs
 dist/
@@ -30,3 +35,6 @@ Thumbs.db
 # AI Service artifacts
 ai-service/trained_models/*
 !ai-service/trained_models/.gitkeep
+trained_models/*
+!trained_models/.gitkeep
+

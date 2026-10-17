@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node src/seed/seed.js",
+    "seed:spread-batches": "node src/seed/spreadBatchExpiry.js",
     "test": "vitest run"
   },
   "keywords": [

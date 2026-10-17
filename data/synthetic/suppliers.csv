@@ -1,0 +1,6 @@
+supplierId,name,leadTimeDays,contact,isDemo
+SUP-001,HealthPlus Pharma,7,orders@healthplus.com,True
+SUP-002,MedSupply Global,10,supplies@medsupply.com,True
+SUP-003,CareLife Pharmaceuticals,5,info@carelife.in,True
+SUP-004,Apex Lifesciences,14,contact@apexlifesciences.com,True
+SUP-005,BioMed Healthcare,3,support@biomedhealth.org,True

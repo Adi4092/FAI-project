@@ -63,25 +63,39 @@ React (Vite)  --Axios, cookies-->  Express API  --Mongoose-->  MongoDB Atlas
 
 ---
 
-## 4. How to Run the App (Phase 2)
+## 4. Run Everything (One-Click Launch)
 
-### Prerequisites
-- Node.js `v18+` (Tested on `v24.14.0`)
-- npm `v9+`
+MedStock AI includes root automation scripts to launch and terminate all three application tiers with a single command on Windows:
 
-### Client Development Server
-```bash
-cd client
-npm install
-npm run dev -- --port 5173
+### Starting All Services
+Double-click `start-all.bat` or run from the project root:
+```cmd
+start-all.bat
 ```
-Open **[http://localhost:5173](http://localhost:5173)** in your browser.
+This script:
+1. Validates all prerequisites (`ai-service\.venv`, `server\node_modules`, `client\node_modules`, and `server\.env`), reporting clear setup instructions if anything is missing.
+2. Opens three separate, persistent CMD windows with distinct titles (`cmd /k`):
+   - **`"AI Service (8000)"`**: Activates Python `.venv` and runs `uvicorn app.main:app --reload --reload-dir app --port 8000`.
+   - **`"Server (5000)"`**: Runs Express API dev server (`npm run dev`).
+   - **`"Client (5173)"`**: Runs Vite React dev server (`npm run dev`).
+3. Waits ~8 seconds for server connections to establish and opens `http://localhost:5173` in your default web browser.
 
-### Verify Production Build
-```bash
-cd client
-npm run build
+### Stopping All Services
+Double-click `stop-all.bat` or run from the project root:
+```cmd
+stop-all.bat
 ```
+This script targets only the specific PIDs listening on ports `8000`, `5000`, and `5173` using `netstat` and terminates them via `taskkill`. It does not terminate other Node or Python processes running on your system.
+
+---
+
+### Manual Launch (Alternative)
+
+If launching components individually:
+1. **AI Service:** `cd ai-service && .venv\Scripts\activate && uvicorn app.main:app --reload --reload-dir app --port 8000`
+2. **Backend API:** `cd server && npm run dev`
+3. **Frontend Client:** `cd client && npm run dev`
+
 
 ---
 

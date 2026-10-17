@@ -8,3 +8,7 @@ export { StockMovement } from './StockMovement.js';
 export { DailyUsage } from './DailyUsage.js';
 export { Setting } from './Setting.js';
 export { AuditLog } from './AuditLog.js';
+export { Forecast } from './Forecast.js';
+export { PurchaseOrder } from './PurchaseOrder.js';
+export { ReorderRecommendation } from './ReorderRecommendation.js';
+export { Notification } from './Notification.js';

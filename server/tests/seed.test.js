@@ -35,4 +35,30 @@ describe('Database Seed Script', () => {
     expect(recon.reconciled).toBe(true);
     expect(recon.mismatches.length).toBe(0);
   });
+
+  it('spreads batch expiry dates realistically over 5 to 200 days without wiping data', async () => {
+    await seedDatabase({ resetDemo: false });
+    const { spreadBatchExpiry } = await import('../src/seed/spreadBatchExpiry.js');
+    await spreadBatchExpiry();
+
+    const now = new Date();
+    const batches = await Batch.find({ status: 'active', currentQuantity: { $gt: 0 } });
+    expect(batches.length).toBeGreaterThan(0);
+
+    const b7 = batches.filter((b) => (b.expiryDate.getTime() - now.getTime()) / 86400000 <= 7);
+    const b30 = batches.filter((b) => (b.expiryDate.getTime() - now.getTime()) / 86400000 <= 30);
+    const b60 = batches.filter((b) => (b.expiryDate.getTime() - now.getTime()) / 86400000 <= 60);
+    const b90 = batches.filter((b) => (b.expiryDate.getTime() - now.getTime()) / 86400000 <= 90);
+    const bBeyond90 = batches.filter((b) => (b.expiryDate.getTime() - now.getTime()) / 86400000 > 90);
+
+    expect(b7.length).toBeGreaterThan(0);
+    expect(b30.length).toBeGreaterThan(b7.length);
+    expect(b60.length).toBeGreaterThan(b30.length);
+    expect(b90.length).toBeGreaterThan(b60.length);
+    expect(bBeyond90.length).toBeGreaterThan(0);
+
+    // Verify reconciliation still passes after spread adjustments
+    const recon = await reconcileInventory();
+    expect(recon.reconciled).toBe(true);
+  });
 });

@@ -19,6 +19,11 @@ import supplierRoutes from './routes/supplierRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import settingRoutes from './routes/settingRoutes.js';
 import auditLogRoutes from './routes/auditLogRoutes.js';
+import forecastRoutes from './routes/forecastRoutes.js';
+import expiryRoutes from './routes/expiryRoutes.js';
+import stockoutRoutes from './routes/stockoutRoutes.js';
+import reorderRoutes from './routes/reorderRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 const app = express();
 
@@ -61,6 +66,11 @@ app.use('/api/suppliers', supplierRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/audit-logs', auditLogRoutes);
+app.use('/api/forecasts', forecastRoutes);
+app.use('/api/expiry-risk', expiryRoutes);
+app.use('/api/stockout-predictions', stockoutRoutes);
+app.use('/api/reorders', reorderRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
