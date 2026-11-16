@@ -1,6 +1,7 @@
 import { Medicine } from '../models/Medicine.js';
 import { Batch } from '../models/Batch.js';
 import { Setting } from '../models/Setting.js';
+import { PurchaseOrder } from '../models/PurchaseOrder.js';
 import { createNotification, resolveNotification } from '../services/notificationService.js';
 import { getStockoutPredictions } from '../services/stockoutService.js';
 import { getStartOfToday, calculateDaysToExpiry } from '../utils/dates.js';
@@ -114,6 +115,34 @@ export async function runAlertJob() {
     }
   } catch (err) {
     logger.error('[alertJob] Error checking stockout predictions in alert job:', err);
+  }
+
+  // 4. Evaluate Purchase Orders Pending Approval
+  try {
+    const pendingOrders = await PurchaseOrder.find({ status: 'pending_approval' }).populate('supplierId', 'name');
+    for (const po of pendingOrders) {
+      const dedupeKey = `PO_PENDING:${po._id}`;
+      const suppName = po.supplierId?.name || 'Supplier';
+      const created = await createNotification({
+        type: 'po_pending',
+        severity: 'warning',
+        title: `Purchase Order ${po.orderNumber} Pending Approval`,
+        message: `Purchase order ${po.orderNumber} (${suppName}) requires manager approval.`,
+        relatedEntityType: 'PurchaseOrder',
+        relatedEntityId: po._id,
+        dedupeKey
+      });
+      if (created) createdAlerts++;
+    }
+
+    // Auto-resolve PO_PENDING for non-pending POs
+    const nonPendingOrders = await PurchaseOrder.find({ status: { $ne: 'pending_approval' } }).select('_id');
+    for (const po of nonPendingOrders) {
+      const res = await resolveNotification(`PO_PENDING:${po._id}`);
+      if (res?.modifiedCount > 0) resolvedAlerts += res.modifiedCount;
+    }
+  } catch (err) {
+    logger.error('[alertJob] Error checking pending purchase orders in alert job:', err);
   }
 
   logger.info(`[alertJob] Finished alert evaluation: ${createdAlerts} active alerts evaluated/created, ${resolvedAlerts} auto-resolved.`);

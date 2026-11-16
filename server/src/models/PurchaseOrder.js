@@ -15,7 +15,7 @@ const poItemSchema = new mongoose.Schema(
     unitCost: {
       type: Number,
       min: 0,
-      default: 0
+      default: null
     },
     quantityReceived: {
       type: Number,
@@ -53,7 +53,7 @@ const poReceiptLineSchema = new mongoose.Schema(
     unitCost: {
       type: Number,
       min: 0,
-      default: 0
+      default: null
     },
     batchId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -100,7 +100,7 @@ const purchaseOrderSchema = new mongoose.Schema(
     items: [poItemSchema],
     status: {
       type: String,
-      enum: ['draft', 'pending_approval', 'approved', 'partially_received', 'received', 'cancelled'],
+      enum: ['draft', 'pending_approval', 'approved', 'partially_received', 'received', 'cancelled', 'rejected'],
       default: 'draft',
       index: true
     },
@@ -125,9 +125,13 @@ const purchaseOrderSchema = new mongoose.Schema(
     estimatedTotalCost: {
       type: Number,
       min: 0,
-      default: 0
+      default: null
     },
     cancelReason: {
+      type: String,
+      default: null
+    },
+    rejectReason: {
       type: String,
       default: null
     },

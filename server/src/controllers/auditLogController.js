@@ -16,6 +16,14 @@ export async function getAuditLogs(req, res, next) {
     if (req.query.entityId) {
       filter.entityId = req.query.entityId;
     }
+    if (req.query.actorId) {
+      filter.actorId = req.query.actorId;
+    }
+    if (req.query.from || req.query.to) {
+      filter.timestamp = {};
+      if (req.query.from) filter.timestamp.$gte = new Date(req.query.from);
+      if (req.query.to) filter.timestamp.$lte = new Date(req.query.to);
+    }
 
     const total = await AuditLog.countDocuments(filter);
     const logs = await AuditLog.find(filter)

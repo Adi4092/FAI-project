@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -17,25 +17,56 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { APP_NAME } from '../../utils/constants';
+import { useAuth } from '../../context/AuthContext';
+import { notificationService } from '../../services/notificationService';
 
 export const navigationItems = [
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Medicines', path: '/medicines', icon: Pill },
-  { name: 'Batches & Inventory', path: '/inventory', icon: Boxes },
-  { name: 'Expiry Risk', path: '/expiry-risk', icon: AlertTriangle },
-  { name: 'AI Forecasting', path: '/forecasting', icon: BrainCircuit, badge: 'AI' },
-  { name: 'Stockout Predictions', path: '/stockout-predictions', icon: TrendingDown },
-  { name: 'Reorder Recommendations', path: '/reorders', icon: ShoppingBag },
-  { name: 'Stock Movements', path: '/stock-movements', icon: History },
-  { name: 'Suppliers & Orders', path: '/suppliers', icon: Truck },
-  { name: 'Purchase Orders', path: '/purchase-orders', icon: Boxes },
-  { name: 'Reports', path: '/reports', icon: FileBarChart },
-  { name: 'Notifications', path: '/notifications', icon: Bell, badgeCount: 4 },
-  { name: 'User Management', path: '/users', icon: Users },
-  { name: 'Settings', path: '/settings', icon: Settings },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'Medicines', path: '/medicines', icon: Pill, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'Batches & Inventory', path: '/inventory', icon: Boxes, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'Expiry Risk', path: '/expiry-risk', icon: AlertTriangle, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'AI Forecasting', path: '/forecasting', icon: BrainCircuit, badge: 'AI', allowedRoles: ['admin', 'inventory_manager'] },
+  { name: 'Stockout Predictions', path: '/stockout-predictions', icon: TrendingDown, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'Reorder Recommendations', path: '/reorders', icon: ShoppingBag, allowedRoles: ['admin', 'inventory_manager'] },
+  { name: 'Stock Movements', path: '/stock-movements', icon: History, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'Suppliers & Orders', path: '/suppliers', icon: Truck, allowedRoles: ['admin', 'inventory_manager'] },
+  { name: 'Purchase Orders', path: '/purchase-orders', icon: Boxes, allowedRoles: ['admin', 'inventory_manager'] },
+  { name: 'Reports', path: '/reports', icon: FileBarChart, allowedRoles: ['admin', 'inventory_manager'] },
+  { name: 'Notifications', path: '/notifications', icon: Bell, allowedRoles: ['admin', 'inventory_manager', 'staff'] },
+  { name: 'User Management', path: '/users', icon: Users, allowedRoles: ['admin'] },
+  { name: 'Settings', path: '/settings', icon: Settings, allowedRoles: ['admin', 'inventory_manager'] },
 ];
 
 export default function Sidebar({ onCloseMobile }) {
+  const { user } = useAuth();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchUnread = async () => {
+      try {
+        const res = await notificationService.getUnreadCount();
+        if (isMounted && res?.data?.unreadCount !== undefined) {
+          setUnreadCount(res.data.unreadCount);
+        }
+      } catch (err) {
+        // Silently handle
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const userRole = user?.role || 'staff';
+  const visibleItems = navigationItems.filter(
+    (item) => !item.allowedRoles || item.allowedRoles.includes(userRole)
+  );
+
   return (
     <aside className="w-[230px] h-screen bg-gradient-to-b from-[#0B2A5B] to-[#061B3F] text-white flex flex-col flex-shrink-0 select-none shadow-xl border-r border-[#133E7C]/40">
       {/* Brand Header */}
@@ -53,8 +84,11 @@ export default function Sidebar({ onCloseMobile }) {
 
       {/* Nav Items */}
       <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-1">
-        {navigationItems.map((item) => {
+        {visibleItems.map((item) => {
           const Icon = item.icon;
+          const isNotificationItem = item.path === '/notifications';
+          const badgeValue = isNotificationItem && unreadCount > 0 ? unreadCount : null;
+
           return (
             <NavLink
               key={item.path}
@@ -77,9 +111,9 @@ export default function Sidebar({ onCloseMobile }) {
                   {item.badge}
                 </span>
               )}
-              {item.badgeCount && (
-                <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold bg-status-critical text-white">
-                  {item.badgeCount}
+              {badgeValue && (
+                <span className="px-1.5 py-0.5 rounded-full flex items-center justify-center text-[10px] font-bold bg-status-critical text-white min-w-[18px]">
+                  {badgeValue}
                 </span>
               )}
             </NavLink>

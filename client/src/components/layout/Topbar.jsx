@@ -2,12 +2,35 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Bell, Menu, ChevronDown, LogOut, User, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { notificationService } from '../../services/notificationService';
 
 export default function Topbar({ onToggleMobile }) {
   const { user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchUnread = async () => {
+      try {
+        const res = await notificationService.getUnreadCount();
+        if (isMounted && res?.data?.unreadCount !== undefined) {
+          setUnreadCount(res.data.unreadCount);
+        }
+      } catch (err) {
+        // Silently handle
+      }
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -23,6 +46,10 @@ export default function Topbar({ onToggleMobile }) {
     await logout();
     navigate('/login');
   };
+
+  const userRole = user?.role || 'staff';
+  const isAdmin = userRole === 'admin';
+  const isManagerOrAdmin = userRole === 'admin' || userRole === 'inventory_manager';
 
   return (
     <header className="h-16 bg-white border-b border-border px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
@@ -57,7 +84,11 @@ export default function Topbar({ onToggleMobile }) {
           title="Notifications"
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-status-critical ring-2 ring-white" />
+          {unreadCount > 0 && (
+            <span className="absolute top-1 right-1 px-1 min-w-[16px] h-4 rounded-full bg-status-critical text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </button>
 
         {/* User Menu */}
@@ -87,27 +118,31 @@ export default function Topbar({ onToggleMobile }) {
                 <p className="text-[11px] text-slate-400 truncate">{user?.email || 'admin@medstock.local'}</p>
               </div>
 
-              <button
-                onClick={() => {
-                  setDropdownOpen(false);
-                  navigate('/settings');
-                }}
-                className="w-full px-3.5 py-2 text-left text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
-                <span>System Settings</span>
-              </button>
+              {isManagerOrAdmin && (
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    navigate('/settings');
+                  }}
+                  className="w-full px-3.5 py-2 text-left text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
+                  <span>System Settings</span>
+                </button>
+              )}
 
-              <button
-                onClick={() => {
-                  setDropdownOpen(false);
-                  navigate('/users');
-                }}
-                className="w-full px-3.5 py-2 text-left text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
-              >
-                <User className="w-3.5 h-3.5 text-slate-400" />
-                <span>User Management</span>
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    navigate('/users');
+                  }}
+                  className="w-full px-3.5 py-2 text-left text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                >
+                  <User className="w-3.5 h-3.5 text-slate-400" />
+                  <span>User Management</span>
+                </button>
+              )}
 
               <div className="border-t border-border my-1" />
 

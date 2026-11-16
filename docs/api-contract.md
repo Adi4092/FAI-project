@@ -1079,18 +1079,23 @@ All endpoints accept:
 
 ### 2.13 Users, Settings & Audit Logs
 
-- `GET /api/users` (Admin)
-- `POST /api/users` (Admin)
-- `PUT /api/users/:id` (Admin)
-- `PATCH /api/users/:id/role` (Admin)
-- `PATCH /api/users/:id/status` (Admin)
-- `POST /api/users/:id/reset-password` (Admin)
-- `GET /api/settings` (Admin)
-- `PUT /api/settings` (Admin)
-- `POST /api/settings/import/preview` (Admin, Manager - CSV file upload)
-- `POST /api/settings/import/commit` (Admin, Manager - Commit validated session)
-- `GET /api/settings/templates/:name` (All roles - downloads CSV template)
-- `GET /api/audit-logs` (Admin - chronological, append-only)
+- `GET /api/users` (Admin - paginated list of users)
+- `POST /api/users` (Admin - create user with hashed password)
+- `PUT /api/users/:id` (Admin - update name)
+- `PATCH /api/users/:id/role` (Admin - change role, protected against demoting last active admin)
+- `PATCH /api/users/:id/status` (Admin - activate/deactivate, protected against deactivating last active admin)
+- `POST /api/users/:id/reset-password` (Admin - reset password with bcrypt hashing)
+- `DELETE /api/users/:id` (Admin - delete user, protected against deleting last active admin)
+- `GET /api/settings` (Admin - retrieve system configuration single document)
+- `PUT /api/settings` (Admin - update system configuration)
+- `POST /api/settings/import/preview` (Admin, Manager - Whole-file CSV validation preview before commit)
+  - **Request Body:** `{ "type": "medicines" | "batches" | "daily_usage", "csvData": "...", "columnMapping": {} }`
+  - **Response `200 OK`:** `{ "importId": "uuid", "type": "...", "totalRows": N, "acceptedCount": N, "rejectedCount": N, "previewRows": [...], "summary": { "accepted": N, "rejected": N } }`
+- `POST /api/settings/import/commit` (Admin, Manager - Commit validated session and reconcile ledger)
+  - **Request Body:** `{ "importId": "uuid", "type": "...", "validRows": [...] }`
+  - **Response `200 OK`:** `{ "accepted": N, "rejected": N, "skipped": N, "message": "..." }`
+- `GET /api/settings/templates/:name` (All roles - downloads CSV template: `medicines`, `batches`, `daily_usage`)
+- `GET /api/audit-logs` (Admin - chronological, append-only, filterable by actor, entityType, and date range)
 
 ---
 

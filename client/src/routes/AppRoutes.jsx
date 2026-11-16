@@ -44,31 +44,68 @@ export default function AppRoutes() {
         <Route path="medicines" element={<MedicinesPage />} />
         <Route path="inventory" element={<InventoryPage />} />
         <Route path="expiry-risk" element={<ExpiryRiskPage />} />
-        <Route path="forecasting" element={<ForecastingPage />} />
         <Route path="stockout-predictions" element={<StockoutPage />} />
-        <Route path="reorders" element={<ReordersPage />} />
         <Route path="stock-movements" element={<StockMovementsPage />} />
-        <Route path="suppliers" element={<SuppliersPage />} />
-        <Route path="purchase-orders" element={<PurchaseOrdersPage />} />
-        <Route path="reports" element={<ReportsPage />} />
         <Route path="notifications" element={<NotificationsPage />} />
-        
+
+        {/* Admin and Inventory Manager routes */}
+        <Route
+          path="forecasting"
+          element={
+            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
+              <ForecastingPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="reorders"
+          element={
+            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
+              <ReordersPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="suppliers"
+          element={
+            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
+              <SuppliersPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="purchase-orders"
+          element={
+            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
+              <PurchaseOrdersPage />
+            </RoleRoute>
+          }
+        />
+        <Route
+          path="reports"
+          element={
+            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
+              <ReportsPage />
+            </RoleRoute>
+          }
+        />
+
+        {/* Admin and Manager for Settings (Manager can access Data Import tab) */}
+        <Route
+          path="settings"
+          element={
+            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
+              <SettingsPage />
+            </RoleRoute>
+          }
+        />
+
         {/* Admin only */}
         <Route
           path="users"
           element={
             <RoleRoute allowedRoles={['admin']}>
               <UsersPage />
-            </RoleRoute>
-          }
-        />
-
-        {/* Admin & Manager */}
-        <Route
-          path="settings"
-          element={
-            <RoleRoute allowedRoles={['admin', 'inventory_manager']}>
-              <SettingsPage />
             </RoleRoute>
           }
         />

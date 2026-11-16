@@ -327,6 +327,10 @@ export async function approveRecommendation(id, userId = null) {
   const leadTime = rec.preferredSupplierId?.defaultLeadTimeDays || 7;
   const expectedDeliveryDate = new Date(Date.now() + leadTime * 24 * 60 * 60 * 1000);
 
+  const hasValidCost = typeof rec.estimatedCost === 'number' && rec.estimatedCost > 0 && finalQty > 0;
+  const unitCost = hasValidCost ? Number((rec.estimatedCost / finalQty).toFixed(2)) : null;
+  const estimatedTotalCost = hasValidCost ? Number(rec.estimatedCost.toFixed(2)) : null;
+
   const po = await PurchaseOrder.create({
     orderNumber,
     supplierId,
@@ -334,14 +338,14 @@ export async function approveRecommendation(id, userId = null) {
       {
         medicineId: rec.medicineId._id,
         quantityOrdered: finalQty,
-        unitCost: rec.estimatedCost && finalQty > 0 ? Number((rec.estimatedCost / finalQty).toFixed(2)) : 0,
+        unitCost,
         quantityReceived: 0
       }
     ],
     status: 'draft',
     expectedDeliveryDate,
     createdBy: userId,
-    estimatedTotalCost: rec.estimatedCost || 0,
+    estimatedTotalCost,
     sourceRecommendationId: rec._id
   });
 

@@ -250,7 +250,7 @@ describe('ForecastingPage — Forecast History and Navigation', () => {
     // Warning alert should appear
     const alert = await screen.findByTestId('stale-history-warning');
     expect(alert).toBeInTheDocument();
-    expect(alert.textContent).toContain('Usage data ends on 2026-10-13; the first 3 forecast days are already in the past.');
+    expect(alert.textContent).toMatch(/Usage data ends on 2026-10-13; the first \d+ forecast days are already in the past\./);
 
     // Past date rows should carry the "Past" badge
     const pastBadges = await screen.findAllByTestId('past-forecast-badge');

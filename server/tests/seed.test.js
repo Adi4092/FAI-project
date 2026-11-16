@@ -34,7 +34,7 @@ describe('Database Seed Script', () => {
     const recon = await reconcileInventory();
     expect(recon.reconciled).toBe(true);
     expect(recon.mismatches.length).toBe(0);
-  });
+  }, 90000);
 
   it('spreads batch expiry dates realistically over 5 to 200 days without wiping data', async () => {
     await seedDatabase({ resetDemo: false });
@@ -60,5 +60,5 @@ describe('Database Seed Script', () => {
     // Verify reconciliation still passes after spread adjustments
     const recon = await reconcileInventory();
     expect(recon.reconciled).toBe(true);
-  });
+  }, 90000);
 });

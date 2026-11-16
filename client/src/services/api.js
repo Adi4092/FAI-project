@@ -106,7 +106,11 @@ api.interceptors.response.use(
     }
 
     if (error.response?.data) {
-      return Promise.reject(error.response.data);
+      const errPayload = error.response.data;
+      if (typeof errPayload === 'object' && errPayload !== null) {
+        errPayload.response = error.response;
+      }
+      return Promise.reject(errPayload);
     }
 
     return Promise.reject({

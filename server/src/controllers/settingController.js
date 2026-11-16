@@ -5,6 +5,7 @@ import { Setting } from '../models/Setting.js';
 import { ApiError } from '../utils/ApiError.js';
 import { successResponse } from '../utils/apiResponse.js';
 import { logAudit } from '../services/auditService.js';
+import * as importService from '../services/importService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -77,7 +78,8 @@ export async function getTemplate(req, res, next) {
       throw ApiError.notFound(`Template '${name}' not found.`);
     }
 
-    const templatePath = path.resolve(__dirname, `../../../../data/templates/${name}.csv`);
+    // Resolves to data/templates/<name>.csv from server/src/controllers
+    const templatePath = path.resolve(__dirname, '../../../data/templates', `${name}.csv`);
     if (!fs.existsSync(templatePath)) {
       throw ApiError.notFound(`Template file for '${name}' does not exist.`);
     }
@@ -85,6 +87,29 @@ export async function getTemplate(req, res, next) {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${name}-template.csv"`);
     fs.createReadStream(templatePath).pipe(res);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function previewImport(req, res, next) {
+  try {
+    const { type, csvData, columnMapping } = req.body;
+    if (!type || !csvData) {
+      throw ApiError.badRequest('Both import type and csvData are required.');
+    }
+    const result = await importService.previewImport({ type, csvData, columnMapping });
+    return successResponse(res, result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function commitImport(req, res, next) {
+  try {
+    const { importId, type, validRows } = req.body;
+    const result = await importService.commitImport({ importId, type, validRows }, req.user.id);
+    return successResponse(res, result);
   } catch (error) {
     next(error);
   }

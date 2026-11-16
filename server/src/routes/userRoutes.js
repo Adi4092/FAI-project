@@ -5,7 +5,8 @@ import {
   updateUser,
   updateUserRole,
   updateUserStatus,
-  resetPassword
+  resetPassword,
+  deleteUser
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/auth.js';
 import { authorize } from '../middleware/authorize.js';
@@ -21,5 +22,6 @@ router.put('/:id', updateUser);
 router.patch('/:id/role', updateUserRole);
 router.patch('/:id/status', updateUserStatus);
 router.post('/:id/reset-password', resetPassword);
+router.delete('/:id', deleteUser);
 
 export default router;

@@ -24,6 +24,8 @@ import expiryRoutes from './routes/expiryRoutes.js';
 import stockoutRoutes from './routes/stockoutRoutes.js';
 import reorderRoutes from './routes/reorderRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import purchaseOrderRoutes from './routes/purchaseOrderRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 
 const app = express();
 
@@ -71,6 +73,8 @@ app.use('/api/expiry-risk', expiryRoutes);
 app.use('/api/stockout-predictions', stockoutRoutes);
 app.use('/api/reorders', reorderRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/purchase-orders', purchaseOrderRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

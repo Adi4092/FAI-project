@@ -186,3 +186,37 @@ export async function resetPassword(req, res, next) {
     next(error);
   }
 }
+
+export async function deleteUser(req, res, next) {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      throw ApiError.notFound('User not found.');
+    }
+
+    // Guard: Prevent removing the last active admin
+    if (user.role === 'admin') {
+      const activeAdminCount = await User.countDocuments({ role: 'admin', isActive: true });
+      if (activeAdminCount <= 1) {
+        throw ApiError.badRequest('Cannot remove the last active system administrator.');
+      }
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    await logAudit({
+      actorId: req.user.id,
+      action: 'USER_DELETE',
+      entityType: 'User',
+      entityId: user._id,
+      beforeState: user.toJSON(),
+      reason: 'Admin deleted user',
+      ip: req.ip
+    });
+
+    return successResponse(res, { message: 'User deleted successfully.' });
+  } catch (error) {
+    next(error);
+  }
+}
+
