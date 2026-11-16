@@ -1,11 +1,11 @@
 export function formatNumber(num) {
   if (num === null || num === undefined) return '0';
-  return new Intl.NumberFormat('en-US').format(num);
+  return new Intl.NumberFormat('en-IN').format(num);
 }
 
-export function formatCurrency(amount, currency = 'USD') {
+export function formatCurrency(amount, currency = 'INR') {
   if (amount === null || amount === undefined) return 'Cost unavailable';
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: currency,
     minimumFractionDigits: 0,

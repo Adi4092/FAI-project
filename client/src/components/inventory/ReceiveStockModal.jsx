@@ -212,7 +212,7 @@ export default function ReceiveStockModal({ isOpen, onClose, onSuccess }) {
             error={errors.quantity}
           />
           <Input
-            label="Purchase Cost per Unit ($/unit)"
+            label="Purchase Cost per Unit (₹/unit)"
             name="purchaseCostPerUnit"
             type="number"
             step="0.01"

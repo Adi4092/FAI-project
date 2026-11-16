@@ -12,7 +12,7 @@ import {
   FileBarChart,
   Calendar,
   Filter,
-  DollarSign,
+  IndianRupee,
   TrendingDown,
   Info,
   Layers,
@@ -42,7 +42,7 @@ const REPORTS = [
   { id: 'expiry-exposure', label: 'Projected Expiry Exposure', icon: Clock },
   { id: 'stockouts', label: 'Stockout Incidents', icon: Layers },
   { id: 'purchases', label: 'Purchase History', icon: ShoppingBag },
-  { id: 'valuation', label: 'Stock Valuation', icon: DollarSign },
+  { id: 'valuation', label: 'Stock Valuation', icon: IndianRupee },
   { id: 'forecast-performance', label: 'Forecast Performance', icon: Sparkles },
   { id: 'reorders', label: 'Reorder Recommendations', icon: FileBarChart }
 ];
@@ -190,7 +190,7 @@ export default function ReportsPage() {
             <XAxis dataKey="medicine" stroke="#94a3b8" fontSize={10} angle={-15} textAnchor="end" height={45} />
             <YAxis stroke="#94a3b8" fontSize={11} />
             <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '11px' }} />
-            <Bar dataKey="value" name="Valuation ($)" fill="#059669" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="value" name="Valuation (₹)" fill="#059669" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       );

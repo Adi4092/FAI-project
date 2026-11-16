@@ -7,8 +7,9 @@ import EmptyState from '../components/common/EmptyState';
 import ErrorState from '../components/common/ErrorState';
 import Modal from '../components/common/Modal';
 import Pagination from '../components/common/Pagination';
-import { Package, DollarSign, Sparkles, RefreshCw, CheckCircle, XCircle, Edit3, HelpCircle } from 'lucide-react';
+import { Package, IndianRupee, Sparkles, RefreshCw, CheckCircle, XCircle, Edit3, HelpCircle } from 'lucide-react';
 import { reorderService } from '../services/reorderService';
+import { formatCurrency } from '../utils/formatNumber';
 
 export default function ReordersPage() {
   const [data, setData] = useState({
@@ -170,12 +171,12 @@ export default function ReordersPage() {
 
         <div className="card-base p-5 flex items-center gap-4">
           <div className="p-3 rounded-xl bg-emerald-50 text-status-success flex items-center justify-center">
-            <DollarSign className="w-6 h-6" />
+            <IndianRupee className="w-6 h-6" />
           </div>
           <div>
             <div className="text-xs text-slate-500 font-medium">Estimated Replenishment Cost</div>
             <div className="text-2xl font-bold text-slate-900 mt-0.5">
-              ${Number(data.summary?.estimatedCost ?? 0).toLocaleString()}
+              {formatCurrency(data.summary?.estimatedCost ?? 0)}
             </div>
           </div>
         </div>
@@ -282,7 +283,7 @@ export default function ReordersPage() {
                         {r.preferredSupplier?.name || 'Default Supplier'}
                       </td>
                       <td className="py-3 px-4 text-right font-bold text-slate-900">
-                        {r.estimatedCost !== null ? `$${r.estimatedCost}` : 'Cost unavailable'}
+                        {r.estimatedCost !== null ? formatCurrency(r.estimatedCost) : 'Cost unavailable'}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <Badge status={r.status}>{r.status}</Badge>

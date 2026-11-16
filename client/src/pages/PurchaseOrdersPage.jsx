@@ -25,8 +25,9 @@ import {
   AlertCircle,
   Trash2,
   Calendar,
-  DollarSign
+  IndianRupee
 } from 'lucide-react';
+import { formatCurrency } from '../utils/formatNumber';
 
 const STATUS_TABS = [
   { id: 'all', label: 'All Orders' },
@@ -423,7 +424,7 @@ export default function PurchaseOrdersPage() {
                           {isCostUnknown ? (
                             <span className="text-amber-600 font-medium">Cost unavailable</span>
                           ) : (
-                            <span>Est: ${Number(po.estimatedTotalCost).toFixed(2)}</span>
+                            <span>Est: {formatCurrency(po.estimatedTotalCost)}</span>
                           )}
                         </div>
                       </td>
@@ -552,7 +553,7 @@ export default function PurchaseOrdersPage() {
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Estimated Cost</span>
                 <span className="font-bold text-slate-900 block text-sm">
                   {selectedOrder.estimatedTotalCost !== null && selectedOrder.estimatedTotalCost > 0
-                    ? `$${Number(selectedOrder.estimatedTotalCost).toFixed(2)}`
+                    ? formatCurrency(selectedOrder.estimatedTotalCost)
                     : 'Cost unavailable'}
                 </span>
                 {(selectedOrder.hasUnknownCost || (selectedOrder.items || []).some((it) => it.unitCost === null || it.unitCost === undefined || it.unitCost === 0)) && (
@@ -598,10 +599,10 @@ export default function PurchaseOrdersPage() {
                           <td className="py-2 px-3 text-right font-medium text-emerald-700">{it.quantityReceived || 0}</td>
                           <td className="py-2 px-3 text-right font-medium text-amber-700">{rem}</td>
                           <td className="py-2 px-3 text-right text-slate-600">
-                            {!isLineCostUnknown ? `$${Number(it.unitCost).toFixed(2)}` : 'Cost unavailable'}
+                            {!isLineCostUnknown ? formatCurrency(it.unitCost) : 'Cost unavailable'}
                           </td>
                           <td className="py-2 px-3 text-right font-semibold text-slate-800">
-                            {lineTotal !== null ? `$${lineTotal.toFixed(2)}` : 'Cost unavailable'}
+                            {lineTotal !== null ? formatCurrency(lineTotal) : 'Cost unavailable'}
                           </td>
                         </tr>
                       );
@@ -758,7 +759,7 @@ export default function PurchaseOrdersPage() {
                         type="number"
                         step="0.01"
                         min="0"
-                        placeholder="Unit Cost ($)"
+                        placeholder="Unit Cost (₹)"
                         value={item.unitCost}
                         onChange={(e) => {
                           const newItems = [...createForm.items];

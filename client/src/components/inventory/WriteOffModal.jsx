@@ -33,7 +33,7 @@ export default function WriteOffModal({ isOpen, onClose, batch, onSuccess }) {
 
       const realizedWastage = res.data?.realizedWastageCost ?? cost;
       showToast(
-        `Batch ${batch.batchNumber} written off: ${currentQty} units removed ($${realizedWastage} realized wastage)`,
+        `Batch ${batch.batchNumber} written off: ${currentQty} units removed (₹${realizedWastage} realized wastage)`,
         'success'
       );
       onSuccess?.();
@@ -68,7 +68,7 @@ export default function WriteOffModal({ isOpen, onClose, batch, onSuccess }) {
           <div className="text-slate-700 leading-relaxed">
             This operation will zero out the batch balance (
             <strong>{currentQty} units</strong>) and log an immutable write-off entry.
-            Estimated financial cost realized: <strong>${cost}</strong>.
+            Estimated financial cost realized: <strong>₹{cost}</strong>.
           </div>
         </div>
 

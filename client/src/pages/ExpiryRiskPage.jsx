@@ -7,8 +7,9 @@ import EmptyState from '../components/common/EmptyState';
 import ErrorState from '../components/common/ErrorState';
 import Modal from '../components/common/Modal';
 import Pagination from '../components/common/Pagination';
-import { Download, AlertTriangle, DollarSign, Info, ShieldAlert, ChevronRight } from 'lucide-react';
+import { Download, AlertTriangle, IndianRupee, Info, ShieldAlert, ChevronRight } from 'lucide-react';
 import { expiryService } from '../services/expiryService';
+import { formatCurrency } from '../utils/formatNumber';
 
 export default function ExpiryRiskPage() {
   const [windowDays, setWindowDays] = useState('30');
@@ -212,14 +213,14 @@ export default function ExpiryRiskPage() {
 
         <div className="card-base p-5 flex items-center gap-4 border-l-4 border-brand">
           <div className="p-3 rounded-xl bg-brand/10 text-brand flex items-center justify-center">
-            <DollarSign className="w-6 h-6" />
+            <IndianRupee className="w-6 h-6" />
           </div>
           <div>
             <div className="text-xs text-slate-500 font-medium">
               Estimated Value at Risk (All batches in {windowDays}d window)
             </div>
             <div className="text-2xl font-bold text-slate-900 mt-0.5">
-              ${Number(data.summary?.estimatedValueAtRisk ?? 0).toLocaleString()}
+              {formatCurrency(data.summary?.estimatedValueAtRisk ?? 0)}
             </div>
           </div>
         </div>

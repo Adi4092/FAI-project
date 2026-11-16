@@ -251,12 +251,12 @@ export default function SettingsPage() {
             <div>
               <label className="block font-semibold text-slate-700 mb-1">Display Currency Code</label>
               <select
-                value={settings?.currency || 'USD'}
+                value={settings?.currency || 'INR'}
                 onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
                 className="input-base text-xs py-2 w-full"
               >
-                <option value="USD">USD ($ - US Dollar)</option>
                 <option value="INR">INR (₹ - Indian Rupee)</option>
+                <option value="USD">USD ($ - US Dollar)</option>
                 <option value="EUR">EUR (€ - Euro)</option>
                 <option value="GBP">GBP (£ - British Pound)</option>
               </select>
